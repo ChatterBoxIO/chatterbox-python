@@ -1,6 +1,6 @@
 import aiohttp
 from typing import Optional
-from .models import Session, SendBotRequest
+from .models import Session, SendBotRequest, TemporaryToken
 from .websocket import WebSocketClient
 
 
@@ -31,6 +31,33 @@ class ChatterBox:
         if self._session is not None and not self._session.closed:
             await self._session.close()
             self._session = None
+
+    async def get_temporary_token(self, expires_in: int = 3600) -> TemporaryToken:
+        """
+        Generate a temporary token for enhanced security.
+        
+        Args:
+            expires_in: The duration in seconds for which the token should be valid.
+                       Must be between 60 and 86400 seconds (1 minute to 24 hours).
+                       Defaults to 3600 seconds (1 hour).
+            
+        Returns:
+            TemporaryToken: Contains the temporary token and its expiration time
+            
+        Raises:
+            ValueError: If expires_in is not between 60 and 86400 seconds
+        """
+        if not 60 <= expires_in <= 86400:
+            raise ValueError("expires_in must be between 60 and 86400 seconds")
+            
+        session = await self._get_session()
+        response = await session.post(
+            f"{self.base_url}/token",
+            json={"expiresIn": expires_in}
+        )
+        response.raise_for_status()
+        data = await response.json()
+        return TemporaryToken(**data)
 
     async def send_bot(self, **kwargs) -> Session:
         """
@@ -82,4 +109,4 @@ class ChatterBox:
         Returns:
             WebSocketClient: The WebSocket client instance
         """
-        return WebSocketClient(session_id, self.authorization_token, self.websocket_base_url) 
+        return WebSocketClient(session_id, self.authorization_token, self.websocket_base_url)

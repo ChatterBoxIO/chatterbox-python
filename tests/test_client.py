@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from chatterbox import ChatterBox, Session
-from chatterbox.models import SendBotRequest
+from chatterbox.models import SendBotRequest, TemporaryToken
 
 
 @pytest.fixture
@@ -67,4 +67,35 @@ async def test_close(client):
         await client.close()
         
         # Use await to properly check the async mock
-        await mock_session_instance.close.aclose() 
+        await mock_session_instance.close.aclose()
+
+
+@pytest.mark.asyncio
+async def test_get_temporary_token(client):
+    mock_response = AsyncMock()
+    mock_response.json.return_value = {
+        "token": "test_token",
+        "expiresIn": 3600
+    }
+    mock_response.__aenter__.return_value = mock_response
+
+    mock_session_instance = AsyncMock()
+    mock_session_instance.post.return_value = mock_response
+
+    with patch("aiohttp.ClientSession", return_value=mock_session_instance):
+        result = await client.get_temporary_token(expires_in=3600)
+        
+        assert isinstance(result, TemporaryToken)
+        assert result.token == "test_token"
+        assert result.expires_in == 3600
+        
+        mock_session_instance.post.assert_called_once_with(
+            "https://bot.chatter-box.io/token",
+            json={"expiresIn": 3600}
+        )
+
+
+@pytest.mark.asyncio
+async def test_get_temporary_token_invalid_expiration(client):
+    with pytest.raises(ValueError, match="expires_in must be between 60 and 86400 seconds"):
+        await client.get_temporary_token(expires_in=30) 

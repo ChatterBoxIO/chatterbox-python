@@ -44,4 +44,12 @@ class MeetingFinishedEvent(WebSocketEvent):
 class TranscriptEvent(WebSocketEvent):
     """Event triggered when a transcript update is received."""
     type: str = "transcript_received"
-    data: dict = Field(..., description="Contains 'speaker' and 'text' fields") 
+    data: dict = Field(..., description="Contains 'speaker' and 'text' fields")
+
+
+class TemporaryToken(BaseModel):
+    """Response model for temporary token generation."""
+    token: str = Field(..., description="The generated temporary JWT token")
+    expires_in: int = Field(..., alias="expiresIn", description="The duration in seconds for which the token is valid")
+
+    model_config = ConfigDict(populate_by_name=True) 

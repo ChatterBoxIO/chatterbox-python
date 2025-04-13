@@ -119,6 +119,35 @@ To use the ChatterBox client, you need an authorization token. You can request y
 
 Once you have your token, you can use it to initialize the ChatterBox client as shown in the examples above.
 
+### Temporary Tokens
+
+For enhanced security, you can generate temporary tokens that expire after a specified duration. This is particularly useful for client-side applications where you don't want to expose your permanent API token.
+
+```python
+import asyncio
+from chatterbox_io import ChatterBox
+
+async def main():
+    # Initialize with your permanent API token
+    client = ChatterBox(authorization_token="your_permanent_token")
+
+    # Generate a temporary token that expires in 1 hour (3600 seconds)
+    token_data = await client.get_temporary_token(expires_in=3600)
+    print(f"Temporary token: {token_data['token']}")
+    print(f"Expires in: {token_data['expiresIn']} seconds")
+
+    # Use the temporary token for client operations
+    temp_client = ChatterBox(authorization_token=token_data['token'])
+    # ... use temp_client for your operations ...
+
+    await client.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+Temporary tokens can be configured to expire between 60 seconds (1 minute) and 86400 seconds (24 hours). The default expiration time is 3600 seconds (1 hour).
+
 ## Development
 
 To set up the development environment:
