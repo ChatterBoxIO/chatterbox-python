@@ -26,7 +26,7 @@ To use the ChatterBox client, initialize it with your authorization token and de
 ```python
 import asyncio
 import os
-from chatterbox import ChatterBox
+from chatterbox_io import ChatterBox
 
 # Initialize the client with your authorization token
 client = ChatterBox(
