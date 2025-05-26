@@ -23,7 +23,9 @@ async def main():
             platform="zoom",
             meeting_id="1234567890",
             meeting_password="your_meeting_password_if_used", # Optional
-            bot_name="Test Bot"
+            bot_name="Test Bot",  # Optional
+            language="en",  # Optional: Set to English
+            model="nova-3"  # Optional: Use Deepgram's nova-3 model
         )
         print(f"Bot started with session ID: {session.id}")
 

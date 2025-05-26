@@ -69,6 +69,8 @@ class ChatterBox:
             meeting_password: (Optional) The meeting password
             bot_name: (Optional) Custom name for the bot
             webhook_url: (Optional) Webhook URL for meeting events
+            language: (Optional) The language for transcription. Defaults to 'multi'
+            model: (Optional) The Deepgram model to use for transcription. Defaults to 'nova-3'
             
         Returns:
             Session: The created session

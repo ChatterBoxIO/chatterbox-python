@@ -21,6 +21,8 @@ class SendBotRequest(BaseModel):
     meeting_password: Optional[str] = Field(None, description="The meeting password", alias="meetingPassword")
     bot_name: Optional[str] = Field("ChatterBox", description="Custom name for the bot", alias="botName")
     webhook_url: Optional[str] = Field(None, description="Webhook URL for meeting events", alias="webhookUrl")
+    language: Optional[str] = Field("multi", description="The language for transcription", alias="language")
+    model: Optional[str] = Field("nova-3", description="The Deepgram model to use for transcription", alias="model")
 
     model_config = ConfigDict(populate_by_name=True)
 
