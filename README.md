@@ -49,7 +49,9 @@ async def main():
             platform="zoom",
             meeting_id="1234567890",
             meeting_password="your_meeting_password_if_used",  # Optional
-            bot_name="Test Bot"  # Optional
+            bot_name="Test Bot",  # Optional
+            language="multi",  # Optional
+            model="nova-3"  # Optional
         )
         print(f"Bot started with session ID: {session.id}")
 
@@ -90,6 +92,8 @@ if __name__ == "__main__":
 - `meeting_password`: (Optional) The meeting password
 - `bot_name`: (Optional) Customize the name of the bot. Default is 'ChatterBox'
 - `webhook_url`: (Optional) The webhook URL to send the meeting events to
+- `language`: (Optional) The language for transcription. Default is 'multi' for multi-language support
+- `model`: (Optional) The Deepgram model to use for transcription. Default is 'nova-3'
 
 ### WebSocket Event Handlers
 
