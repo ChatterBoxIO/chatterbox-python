@@ -64,9 +64,9 @@ class ChatterBox:
         Send a bot to a meeting.
         
         Args:
-            platform: The platform to send the bot to ('zoom', 'googlemeet')
+            platform: The platform to send the bot to ('zoom', 'googlemeet', 'teams')
             meeting_id: The ID of the meeting
-            meeting_password: (Optional) The meeting password
+            meeting_password: (Optional) The meeting password or passcode
             bot_name: (Optional) Custom name for the bot
             webhook_url: (Optional) Webhook URL for meeting events
             language: (Optional) The language for transcription. Defaults to 'multi'

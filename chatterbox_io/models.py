@@ -16,7 +16,7 @@ class Session(BaseModel):
 
 class SendBotRequest(BaseModel):
     """Request model for sending a bot to a meeting."""
-    platform: str = Field(..., description="The platform to send the bot to ('zoom', 'googlemeet')")
+    platform: str = Field(..., description="The platform to send the bot to ('zoom', 'googlemeet', 'teams')")
     meeting_id: str = Field(..., description="The ID of the meeting", alias="meetingId")
     meeting_password: Optional[str] = Field(None, description="The meeting password", alias="meetingPassword")
     bot_name: Optional[str] = Field("ChatterBox", description="Custom name for the bot", alias="botName")

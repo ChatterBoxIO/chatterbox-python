@@ -5,16 +5,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="chatterbox-io",
-    version="0.3.1",
+    version="1.0.0",
     author="OverQuotaAI",
-    author_email="support@chatter-box.io",
+    author_email="alex@chatter-box.io",
     description="Python client for ChatterBox - Integrate with Zoom, Teams, Google Meet for real-time transcripts",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/OverQuotaAI/chatterbox-python",
     packages=find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
