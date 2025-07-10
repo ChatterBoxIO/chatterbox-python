@@ -71,6 +71,9 @@ class ChatterBox:
             webhook_url: (Optional) Webhook URL for meeting events
             language: (Optional) The language for transcription. Defaults to 'multi'
             model: (Optional) The Deepgram model to use for transcription. Defaults to 'nova-3'
+            custom_image: (Optional) Base64-encoded image data for the bot's profile picture.
+                         Must start with 'data:image/[type];base64,'. Supported types: png, jpg, jpeg, gif, bmp, webp, tiff.
+                         For best results, use 4:3 aspect ratio images like 640×480 pixels, 1024×768, or 1400×1050
             
         Returns:
             Session: The created session
@@ -96,7 +99,8 @@ class ChatterBox:
             'meetingId': kwargs.get('meeting_id'),
             'meetingPassword': kwargs.get('meeting_password'),
             'botName': kwargs.get('bot_name'),
-            'webhookUrl': kwargs.get('webhook_url')
+            'webhookUrl': kwargs.get('webhook_url'),
+            'customImage': kwargs.get('custom_image')
         })
             
         return Session(**data)

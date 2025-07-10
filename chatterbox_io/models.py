@@ -23,6 +23,7 @@ class SendBotRequest(BaseModel):
     webhook_url: Optional[str] = Field(None, description="Webhook URL for meeting events", alias="webhookUrl")
     language: Optional[str] = Field("multi", description="The language for transcription", alias="language")
     model: Optional[str] = Field("nova-3", description="The Deepgram model to use for transcription", alias="model")
+    custom_image: Optional[str] = Field(None, description="Base64-encoded image data for the bot's profile picture. Must start with 'data:image/[type];base64,'. Supported types: png, jpg, jpeg, gif, bmp, webp, tiff", alias="customImage")
 
     model_config = ConfigDict(populate_by_name=True)
 
