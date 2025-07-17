@@ -23,6 +23,8 @@ pip install chatterbox-io
 
 To use the ChatterBox client, initialize it with your authorization token and deploy a bot to a meeting:
 
+> **Note**: The ChatterBox client now provides detailed error messages from the server. Make sure to handle exceptions properly to get specific error information.
+
 ```python
 import asyncio
 import os
@@ -108,6 +110,64 @@ Each event handler receives a data dictionary containing the relevant informatio
 
 - Meeting events contain meeting-specific data
 - Transcript events contain 'text' and 'speaker' fields
+
+## Error Handling
+
+The ChatterBox client provides detailed error handling with specific exception types that include the actual server error messages. This allows you to handle different types of errors appropriately and get meaningful error information from the server.
+
+### Exception Types
+
+- `ChatterBoxAPIError`: Base exception class for all API errors
+- `ChatterBoxBadRequestError`: Raised for 400 Bad Request errors (invalid parameters, etc.)
+- `ChatterBoxUnauthorizedError`: Raised for 401 Unauthorized errors (invalid token)
+- `ChatterBoxForbiddenError`: Raised for 403 Forbidden errors (insufficient permissions)
+- `ChatterBoxNotFoundError`: Raised for 404 Not Found errors (resource not found)
+- `ChatterBoxServerError`: Raised for 5xx server errors
+
+### Exception Properties
+
+All exceptions have the following properties:
+
+- `message`: The error message from the server
+- `status_code`: The HTTP status code
+- `response_data`: The full response data from the server (if available)
+
+### Example Error Handling
+
+```python
+import asyncio
+from chatterbox_io import (
+    ChatterBox,
+    ChatterBoxBadRequestError,
+    ChatterBoxUnauthorizedError,
+    ChatterBoxAPIError
+)
+
+async def main():
+    client = ChatterBox(authorization_token="your_token")
+
+    try:
+        session = await client.send_bot(
+            platform="zoom",
+            meeting_id="invalid_meeting_id",
+        )
+    except ChatterBoxBadRequestError as e:
+        print(f"Bad request: {e.message}")
+        print(f"Status code: {e.status_code}")
+        if e.response_data:
+            print(f"Server response: {e.response_data}")
+    except ChatterBoxUnauthorizedError as e:
+        print(f"Authentication failed: {e.message}")
+    except ChatterBoxAPIError as e:
+        print(f"API error: {e.message} (Status: {e.status_code})")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    finally:
+        await client.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
 
 ### WebSocket Connection Management
 

@@ -1,5 +1,24 @@
 from .client import ChatterBox
-from .models import Session, TemporaryToken
+from .models import (
+    Session, 
+    TemporaryToken,
+    ChatterBoxAPIError,
+    ChatterBoxBadRequestError,
+    ChatterBoxUnauthorizedError,
+    ChatterBoxForbiddenError,
+    ChatterBoxNotFoundError,
+    ChatterBoxServerError
+)
 
-__version__ = "1.0.0"
-__all__ = ["ChatterBox", "Session", "TemporaryToken"] 
+__version__ = "1.3.0"
+__all__ = [
+    "ChatterBox", 
+    "Session", 
+    "TemporaryToken",
+    "ChatterBoxAPIError",
+    "ChatterBoxBadRequestError",
+    "ChatterBoxUnauthorizedError",
+    "ChatterBoxForbiddenError",
+    "ChatterBoxNotFoundError",
+    "ChatterBoxServerError"
+] 

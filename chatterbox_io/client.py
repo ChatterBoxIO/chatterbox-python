@@ -1,6 +1,16 @@
 import aiohttp
 from typing import Optional
-from .models import Session, SendBotRequest, TemporaryToken
+from .models import (
+    Session, 
+    SendBotRequest, 
+    TemporaryToken,
+    ChatterBoxAPIError,
+    ChatterBoxBadRequestError,
+    ChatterBoxUnauthorizedError,
+    ChatterBoxForbiddenError,
+    ChatterBoxNotFoundError,
+    ChatterBoxServerError
+)
 from .websocket import WebSocketClient
 
 
@@ -32,6 +42,37 @@ class ChatterBox:
             await self._session.close()
             self._session = None
 
+    async def _handle_response_error(self, response: aiohttp.ClientResponse) -> None:
+        """Handle HTTP error responses and raise appropriate exceptions with server error messages."""
+        if response.status < 400:
+            return  # No error
+            
+        # Try to get the error message from the response body
+        try:
+            error_data = await response.json()
+            error_message = error_data.get('message', error_data.get('error', f'HTTP {response.status}'))
+        except:
+            # If we can't parse JSON, try to get text response
+            try:
+                error_text = await response.text()
+                error_message = error_text if error_text else f'HTTP {response.status}'
+            except:
+                error_message = f'HTTP {response.status}'
+        
+        # Raise specific exception based on status code
+        if response.status == 400:
+            raise ChatterBoxBadRequestError(error_message, response.status, error_data if 'error_data' in locals() else None)
+        elif response.status == 401:
+            raise ChatterBoxUnauthorizedError(error_message, response.status, error_data if 'error_data' in locals() else None)
+        elif response.status == 403:
+            raise ChatterBoxForbiddenError(error_message, response.status, error_data if 'error_data' in locals() else None)
+        elif response.status == 404:
+            raise ChatterBoxNotFoundError(error_message, response.status, error_data if 'error_data' in locals() else None)
+        elif response.status >= 500:
+            raise ChatterBoxServerError(error_message, response.status, error_data if 'error_data' in locals() else None)
+        else:
+            raise ChatterBoxAPIError(error_message, response.status, error_data if 'error_data' in locals() else None)
+
     async def get_temporary_token(self, expires_in: int = 3600) -> TemporaryToken:
         """
         Generate a temporary token for enhanced security.
@@ -55,7 +96,7 @@ class ChatterBox:
             f"{self.base_url}/token",
             json={"expiresIn": expires_in}
         )
-        response.raise_for_status()
+        await self._handle_response_error(response)
         data = await response.json()
         return TemporaryToken(**data)
 
@@ -90,7 +131,7 @@ class ChatterBox:
             f"{self.base_url}/join",
             json=request_data
         )
-        response.raise_for_status()
+        await self._handle_response_error(response)
         data = await response.json()
         
         # Add the request data to the response for context

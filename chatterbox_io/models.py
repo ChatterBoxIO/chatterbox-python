@@ -2,6 +2,41 @@ from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict
 
 
+class ChatterBoxAPIError(Exception):
+    """Base exception class for ChatterBox API errors."""
+    
+    def __init__(self, message: str, status_code: int = None, response_data: dict = None):
+        self.message = message
+        self.status_code = status_code
+        self.response_data = response_data
+        super().__init__(self.message)
+
+
+class ChatterBoxBadRequestError(ChatterBoxAPIError):
+    """Exception raised for 400 Bad Request errors."""
+    pass
+
+
+class ChatterBoxUnauthorizedError(ChatterBoxAPIError):
+    """Exception raised for 401 Unauthorized errors."""
+    pass
+
+
+class ChatterBoxForbiddenError(ChatterBoxAPIError):
+    """Exception raised for 403 Forbidden errors."""
+    pass
+
+
+class ChatterBoxNotFoundError(ChatterBoxAPIError):
+    """Exception raised for 404 Not Found errors."""
+    pass
+
+
+class ChatterBoxServerError(ChatterBoxAPIError):
+    """Exception raised for 5xx server errors."""
+    pass
+
+
 class Session(BaseModel):
     """Represents a ChatterBox session."""
     id: str = Field(alias="sessionId")
