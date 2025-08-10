@@ -53,7 +53,8 @@ async def main():
             meeting_password="your_meeting_password_if_used",  # Optional
             bot_name="Test Bot",  # Optional
             language="multi",  # Optional
-            model="nova-3"  # Optional
+            model="nova-3",  # Optional
+            no_transcript_timeout_seconds=300  # Optional: leave after 5 minutes of no transcripts
         )
         print(f"Bot started with session ID: {session.id}")
 
@@ -97,6 +98,7 @@ if __name__ == "__main__":
 - `language`: (Optional) The language for transcription. Default is 'multi' for multi-language support
 - `model`: (Optional) The Deepgram model to use for transcription. Default is 'nova-3'
 - `custom_image`: (Optional) Base64-encoded image data for the bot's profile picture. Must start with 'data:image/[type];base64,'. Supported types: png, jpg, jpeg, gif, bmp, webp, tiff. For best results, use 4:3 aspect ratio images like 640×480 pixels, 1024×768, or 1400×1050
+- `no_transcript_timeout_seconds`: (Optional) Numeric. If provided, the bot will automatically leave the session after this many seconds without receiving transcripts.
 
 ### WebSocket Event Handlers
 

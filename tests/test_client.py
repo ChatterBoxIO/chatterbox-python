@@ -31,6 +31,7 @@ def mock_session():
 @pytest.mark.asyncio
 async def test_send_bot(client, mock_session):
     mock_response = AsyncMock()
+    mock_response.status = 200
     mock_response.json.return_value = mock_session.model_dump(by_alias=True)
     mock_response.__aenter__.return_value = mock_response
 
@@ -50,14 +51,45 @@ async def test_send_bot(client, mock_session):
         assert result.meeting_id == mock_session.meeting_id
         assert result.bot_name == mock_session.bot_name
         
-        mock_session_instance.post.assert_called_once_with(
-            "https://bot.chatter-box.io/join",
-            json={
-                "platform": "zoom",
-                "meetingId": "1234567890",
-                "botName": "TestBot"
-            }
+        # Verify request URL and required fields; allow additional defaults (e.g., language/model)
+        assert mock_session_instance.post.call_count == 1
+        args, kwargs = mock_session_instance.post.call_args
+        assert args[0] == "https://bot.chatter-box.io/join"
+        body = kwargs.get("json", {})
+        assert body.get("platform") == "zoom"
+        assert body.get("meetingId") == "1234567890"
+        assert body.get("botName") == "TestBot"
+
+
+@pytest.mark.asyncio
+async def test_send_bot_with_no_transcript_timeout(client, mock_session):
+    mock_response = AsyncMock()
+    mock_response.status = 200
+    mock_response.json.return_value = mock_session.model_dump(by_alias=True)
+    mock_response.__aenter__.return_value = mock_response
+
+    mock_session_instance = AsyncMock()
+    mock_session_instance.post.return_value = mock_response
+
+    with patch("aiohttp.ClientSession", return_value=mock_session_instance):
+        result = await client.send_bot(
+            platform="zoom",
+            meeting_id="1234567890",
+            bot_name="TestBot",
+            no_transcript_timeout_seconds=180
         )
+
+        assert isinstance(result, Session)
+
+        # Verify request URL and required fields including timeout; allow additional defaults
+        assert mock_session_instance.post.call_count == 1
+        args, kwargs = mock_session_instance.post.call_args
+        assert args[0] == "https://bot.chatter-box.io/join"
+        body = kwargs.get("json", {})
+        assert body.get("platform") == "zoom"
+        assert body.get("meetingId") == "1234567890"
+        assert body.get("botName") == "TestBot"
+        assert body.get("noTranscriptTimeoutSeconds") == 180
 
 
 @pytest.mark.asyncio
@@ -82,6 +114,7 @@ async def test_close(client):
 @pytest.mark.asyncio
 async def test_get_temporary_token(client):
     mock_response = AsyncMock()
+    mock_response.status = 200
     mock_response.json.return_value = {
         "token": "test_token",
         "expiresIn": 3600

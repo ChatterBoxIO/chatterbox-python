@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="chatterbox-io",
-    version="1.3.0",
+    version="1.4.0",
     author="OverQuotaAI",
     author_email="alex@chatter-box.io",
     description="Python client for ChatterBox - Integrate with Zoom, Teams, Google Meet for real-time transcripts",

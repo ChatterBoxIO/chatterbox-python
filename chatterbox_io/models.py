@@ -59,6 +59,11 @@ class SendBotRequest(BaseModel):
     language: Optional[str] = Field("multi", description="The language for transcription", alias="language")
     model: Optional[str] = Field("nova-3", description="The Deepgram model to use for transcription", alias="model")
     custom_image: Optional[str] = Field(None, description="Base64-encoded image data for the bot's profile picture. Must start with 'data:image/[type];base64,'. Supported types: png, jpg, jpeg, gif, bmp, webp, tiff", alias="customImage")
+    no_transcript_timeout_seconds: Optional[int] = Field(
+        None,
+        description="If set, the bot will leave the session after this many seconds without receiving any transcripts.",
+        alias="noTranscriptTimeoutSeconds",
+    )
 
     model_config = ConfigDict(populate_by_name=True)
 
